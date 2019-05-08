@@ -32,24 +32,10 @@ def int_to_hex(int_value):
         15: 'f'
     }.get(int_value, '0')
 
-def calculate_distance(duration):
-    speed = 343
-    distance = speed * duration / 2 # calculate distance in metres
-    return distance
-
-def calculate_vibration(distance):
-    vibration = (((distance - 0.02) * -1) / (4 - 0.02)) + 1
-    return vibration
-
 def set_vib(motor, row, pulse_time):
     while True:
-        duration = pulse_time
-        distance = calculate_distance(duration)
-        vibration = calculate_vibration(distance)
-        try:
-            motor.value = vibration
-        except:
-            pass
+      motor.value = 0.9
+      sleep(0.5)
 
 class RowChrc(Characteristic):
     ROW_UUID = '37836416-3783-6416-3783-64163783001'
