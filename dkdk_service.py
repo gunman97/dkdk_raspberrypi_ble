@@ -12,51 +12,32 @@ from bluez_components import *
 
 mainloop = None
 
-def int_to_hex(int_value):
-    return {
-        0: '0',
-        1: '1',
-        2: '2',
-        3: '3',
-        4: '4',
-        5: '5',
-        6: '6',
-        7: '7',
-        8: '8',
-        9: '9',
-        10: 'a',
-        11: 'b',
-        12: 'c',
-        13: 'd',
-        14: 'e',
-        15: 'f'
-    }.get(int_value, '0')
 
-def set_vib(motor, row, pulse_time):
-    while True:
-      motor.value = 0.9
-      sleep(0.5)
+def set_vib(motor, value):
+    if value[0] == 0x00:
+        motor.value = 0.8
+    else:
+        motor.value = 0
 
 class RowChrc(Characteristic):
     ROW_UUID = '37836416-3783-6416-3783-64163783001'
 
-    def __init__(self, bus, index, service, row, motor):
+    def __init__(self, bus, index, service, motor):
         Characteristic.__init__(
             self, bus, index,
-            self.ROW_UUID + int_to_hex(row),  # use the row number to build the UUID
+            self.ROW_UUID + '0',  # use the row number to build the UUID
             ['read', 'write'],
             service)
-        self.value = [0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
-        self.row = row
+        self.value = [ 0x00 for i in xrange(1024) ] 
         self.motor = motor
 
     def ReadValue(self, options):
-        print('RowCharacteristic Read: Row: ' + str(self.row) + ' ' + repr(self.value))
+        print('RowCharacteristic Read: ' + repr(self.value))
         return self.value
 
     def WriteValue(self, value, options):
-        print('RowCharacteristic Write: Row: ' + str(self.row) + ' ' + repr(value))
-        #set_vib(self.motor, value[:2])
+        print('RowCharacteristic Write: ' + repr(value))
+        set_vib(self.motor, value)
 
 
 class MotorService(Service):
@@ -64,7 +45,7 @@ class MotorService(Service):
 
     def __init__(self, bus, index, motor):
         Service.__init__(self, bus, index, self.DKDK_SVC_UUID, True)
-        self.add_characteristic(RowChrc(bus, 0, self, 0, motor))
+        self.add_characteristic(RowChrc(bus, 0, self, motor))
 
 
 class MotorApplication(Application):
