@@ -19,13 +19,13 @@ def set_vib(motor, value):
     else:
         motor.value = 0
 
-class RowChrc(Characteristic):
-    ROW_UUID = 'c6a89af5-0385-4d4a-8cb4-c856fcbf132'
+class cmdChrc(Characteristic):
+    CMD_UUID = 'c6a89af5-0385-4d4a-8cb4-c856fcbf1321'
 
     def __init__(self, bus, index, service, motor):
         Characteristic.__init__(
             self, bus, index,
-            self.ROW_UUID + '0',  # use the row number to build the UUID
+            self.CMD_UUID, 
             ['read', 'write'],
             service)
         self.value = [ 0x00 for i in xrange(1024) ] 
@@ -45,7 +45,7 @@ class MotorService(Service):
 
     def __init__(self, bus, index, motor):
         Service.__init__(self, bus, index, self.DKDK_SVC_UUID, True)
-        self.add_characteristic(RowChrc(bus, 0, self, motor))
+        self.add_characteristic(cmdChrc(bus, 0, self, motor))
 
 
 class MotorApplication(Application):
