@@ -20,7 +20,7 @@ def set_vib(motor, value):
         motor.value = 0
 
 class RowChrc(Characteristic):
-    ROW_UUID = '37836416-3783-6416-3783-64163783001'
+    ROW_UUID = 'c6a89af5-0385-4d4a-8cb4-c856fcbf132'
 
     def __init__(self, bus, index, service, motor):
         Characteristic.__init__(
@@ -41,7 +41,7 @@ class RowChrc(Characteristic):
 
 
 class MotorService(Service):
-    DKDK_SVC_UUID = '37836416-3783-6416-3783-641637830000'
+    DKDK_SVC_UUID = 'c6a89af5-0385-4d4a-8cb4-c856fcbf1320'
 
     def __init__(self, bus, index, motor):
         Service.__init__(self, bus, index, self.DKDK_SVC_UUID, True)
